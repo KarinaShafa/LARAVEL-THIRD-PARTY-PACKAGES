@@ -48,16 +48,19 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('employees', EmployeeController::class);
 });
 
+// meletakkan file pada local disk
 Route::get('/local-disk', function() {
     Storage::disk('local')->put('local-example.txt', 'This is local example content');
     return asset('storage/local-example.txt');
 });
 
+// meletakkan File pada Public Disk
 Route::get('/public-disk', function() {
     Storage::disk('public')->put('public-example.txt', 'This is public example content');
     return asset('storage/public-example.txt');
 });
 
+// menampilkan isi file local
 Route::get('/retrieve-local-file', function() {
     if (Storage::disk('local')->exists('local-example.txt')) {
         $contents = Storage::disk('local')->get('local-example.txt');
@@ -68,6 +71,7 @@ Route::get('/retrieve-local-file', function() {
     return $contents;
 });
 
+// menampilkan isi file public
 Route::get('/retrieve-public-file', function() {
     if (Storage::disk('public')->exists('public-example.txt')) {
         $contents = Storage::disk('public')->get('public-example.txt');
@@ -78,6 +82,7 @@ Route::get('/retrieve-public-file', function() {
     return $contents;
 });
 
+// mendownload file lokal
 Route::get('/download-local-file', function() {
     return Storage::download('local-example.txt', 'local file');
 });
@@ -86,18 +91,20 @@ Route::get('/download-public-file', function() {
     return Storage::download('public/public-example.txt', 'public file');
 });
 
-
+// menampilkan URL dari File
 Route::get('/file-url', function() {
     // Just prepend "/storage" to the given path and return a relative URL
     $url = Storage::url('local-example.txt');
     return $url;
 });
 
+// menampilkan Size dari File
 Route::get('/file-size', function() {
     $size = Storage::size('local-example.txt');
     return $size;
 });
 
+// menampilkan Path dari File
 Route::get('/file-path', function() {
     $path = Storage::path('local-example.txt');
     return $path;
@@ -112,6 +119,7 @@ Route::post('/upload-example', function(Request $request) {
     return $path;
 })->name('upload-example');
 
+// Menghapus file
 Route::get('/delete-local-file', function(Request $request) {
     Storage::disk('local')->delete('local-example.txt');
     return 'Deleted';
@@ -124,3 +132,9 @@ Route::get('/delete-public-file', function(Request $request) {
 
 
 Route::get('download-file/{employeeId}', [EmployeeController::class, 'downloadFile'])->name('employees.downloadFile');
+
+Route::get('getEmployees', [EmployeeController::class, 'getData'])->name('employees.getData');
+
+Route::get('exportExcel', [EmployeeController::class, 'exportExcel'])->name('employees.exportExcel');
+
+Route::get('exportPdf', [EmployeeController::class, 'exportPdf'])->name('employees.exportPdf');
